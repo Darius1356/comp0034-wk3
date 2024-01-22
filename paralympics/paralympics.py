@@ -29,7 +29,7 @@ def get_events():
     # Return the data
     return result
 
-@app.get("/events/<event_id>")
+@app.get("/events/<int:event_id>")
 def event_id(event_id):
     """ Returns the event with the given id JSON.
 
@@ -38,7 +38,7 @@ def event_id(event_id):
     :returns: JSON
     """
     event = db.session.execute(
-        db.select(Event).filter_by(event_id=event_id)
+        db.select(Event).filter_by(id=event_id)
     ).scalar_one_or_none()
     return events_schema.dump(event)
 

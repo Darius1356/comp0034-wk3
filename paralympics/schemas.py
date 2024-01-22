@@ -27,3 +27,24 @@ class EventSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
         include_relationships = True
+
+"""
+    type = ma.auto_field()
+    year = ma.auto_field()
+    country = ma.auto_field()
+    host = ma.auto_field()
+    NOC = ma.auto_field()
+    region = ma.auto_field()
+    start = ma.auto_field()
+    end = ma.auto_field()
+    duration = ma.auto_field()
+    disabilities_included = ma.auto_field()
+    countries = ma.auto_field()
+    events = ma.auto_field()
+    athletes = ma.auto_field()
+    sports = ma.auto_field()
+    participants_m = ma.auto_field()
+    participants_f = ma.auto_field()
+    participants = ma.auto_field()
+    highlights = ma.auto_field()
+"""
