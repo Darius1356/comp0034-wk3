@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from paralympics import db
+import json
 
 
 # This uses the latest syntax for SQLAlchemy, older tutorials will show different syntax

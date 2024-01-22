@@ -1,10 +1,10 @@
 import csv
 import os
 from pathlib import Path
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from flask_marshmallow import Marshmallow
 
 
 # https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/quickstart/
@@ -15,6 +15,8 @@ class Base(DeclarativeBase):
 # First create the db object using the SQLAlchemy constructor.
 # Pass a subclass of either DeclarativeBase or DeclarativeBaseNoMeta to the constructor.
 db = SQLAlchemy(model_class=Base)
+# Create a global Flask-Marshmallow object
+ma = Marshmallow()
 
 
 def create_app(test_config=None):
@@ -43,6 +45,8 @@ def create_app(test_config=None):
 
     # Initialise Flask with the SQLAlchemy database extension
     db.init_app(app)
+    # Initialise Flask-Marshmallow
+    ma.init_app(app)
 
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
