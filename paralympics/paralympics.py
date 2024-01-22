@@ -19,6 +19,29 @@ def get_regions():
     # Return the data
     return result
 
+@app.get("/events")
+def get_events():
+    """Returns a list of paralympics events and their details in JSON."""
+    # Select all the regions using Flask-SQLAlchemy
+    all_events = db.session.execute(db.select(Event)).scalars()
+    # Get the data using Marshmallow schema (returns JSON)
+    result = events_schema.dump(all_events)
+    # Return the data
+    return result
+
+@app.get("/events/<event_id>")
+def event_id(event_id):
+    """ Returns the event with the given id JSON.
+
+    :param event_id: The id of the event to return
+    :param type event_id: int
+    :returns: JSON
+    """
+    event = db.session.execute(
+        db.select(Event).filter_by(event_id=event_id)
+    ).scalar_one_or_none()
+    return events_schema.dump(event)
+
 @app.route('/')
 def hello():
     return f"Hello!"
