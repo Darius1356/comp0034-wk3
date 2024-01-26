@@ -2,6 +2,7 @@ from flask import current_app as app
 from paralympics.schemas import RegionSchema, EventSchema
 from paralympics import db
 from paralympics.models import Region, Event
+from Flask import request
 
 # Flask-Marshmallow Schemas
 regions_schema = RegionSchema(many=True)
@@ -29,8 +30,8 @@ def get_events():
     # Return the data
     return result
 
-@app.get("/events/<int:event_id>")
-def event_id(event_id):
+@app.get("/events/<event_id>")
+def get_event(event_id):
     """ Returns the event with the given id JSON.
 
     :param event_id: The id of the event to return
@@ -40,7 +41,20 @@ def event_id(event_id):
     event = db.session.execute(
         db.select(Event).filter_by(id=event_id)
     ).scalar_one_or_none()
-    return events_schema.dump(event)
+    return event_schema.dump(event)
+
+@app.get("/regions/<NOC>")
+def get_region(NOC):
+    """ Returns the region with the given id NOC.
+
+    :param NOC: The id of the event to return
+    :param type NOC: int
+    :returns: JSON
+    """
+    region = db.session.execute(
+        db.select(Region).filter_by(NOC=NOC)
+    ).scalar_one_or_none()
+    return region_schema.dump(region)
 
 @app.route('/')
 def hello():
