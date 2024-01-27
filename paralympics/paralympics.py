@@ -2,7 +2,7 @@ from flask import current_app as app
 from paralympics.schemas import RegionSchema, EventSchema
 from paralympics import db
 from paralympics.models import Region, Event
-from Flask import request
+from flask import request
 
 # Flask-Marshmallow Schemas
 regions_schema = RegionSchema(many=True)
@@ -55,6 +55,20 @@ def get_region(NOC):
         db.select(Region).filter_by(NOC=NOC)
     ).scalar_one_or_none()
     return region_schema.dump(region)
+
+@app.post('/events')
+def add_event():
+    """ Adds a new event.
+    
+    Gets the JSON data from the request body and uses this to deserialise JSON to an object using Marshmallow 
+    event_schema.load()
+
+    :returns: JSON"""
+    ev_json = request.get_json()
+    event = event_schema.load(ev_json)
+    db.session.add(event)
+    db.session.commit()
+    return {"message": f"Event added with id= {event.id}"}
 
 @app.route('/')
 def hello():
