@@ -84,6 +84,34 @@ def add_region():
     db.session.commit()
     return {"message": f"Region added"}
 
+@app.delete('/events/<int:event_id>')
+def delete_event(event_id):
+    """ Deletes an event.
+    
+    Gets the event from the database and deletes it.
+
+    :returns: JSON"""
+    event = db.session.execute(
+        db.select(Event).filter_by(id=event_id)
+    ).scalar_one_or_none()
+    db.session.delete(event)
+    db.session.commit()
+    return {"message": f"Event deleted with id= {event_id}"}
+
+@app.delete('/regions/<noc_code>')
+def delete_region(noc_code):
+    """ Deletes a region.
+    
+    Gets the region from the database and deletes it.
+
+    :returns: JSON"""
+    region = db.session.execute(
+        db.select(Region).filter_by(NOC=noc_code)
+    ).scalar_one_or_none()
+    db.session.delete(region)
+    db.session.commit()
+    return {"message": f"Region deleted with NOC= {noc_code}"}
+
 @app.route('/')
 def hello():
     return f"Hello!"
