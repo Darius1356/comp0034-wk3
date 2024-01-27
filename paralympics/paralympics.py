@@ -2,7 +2,7 @@ from flask import current_app as app
 from paralympics.schemas import RegionSchema, EventSchema
 from paralympics import db
 from paralympics.models import Region, Event
-from flask import request
+from flask import request, make_response
 
 # Flask-Marshmallow Schemas
 regions_schema = RegionSchema(many=True)
@@ -72,10 +72,10 @@ def add_event():
 
 @app.post('/regions')
 def add_region():
-    """ Adds a new event.
+    """ Adds a new region.
     
     Gets the JSON data from the request body and uses this to deserialise JSON to an object using Marshmallow 
-    event_schema.load()
+    region_schema.load()
 
     :returns: JSON"""
     reg_json = request.get_json()
@@ -111,6 +111,31 @@ def delete_region(noc_code):
     db.session.delete(region)
     db.session.commit()
     return {"message": f"Region deleted with NOC= {noc_code}"}
+
+@app.patch("/events/<event_id>")
+def event_update(event_id):
+    """Updates changed fields for the event.
+
+    """
+    # Find the event in the database
+    existing_event = db.session.execute(
+        db.select(Event).filter_by(id=event_id)
+    ).scalar_one_or_none()
+    # Get the updated details from the json sent in the HTTP patch request
+    event_json = request.get_json()
+    # Use Marshmallow to update the existing records with the changes from the json
+    event_updated = event_schema.load(event_json, instance=existing_event, partial=True)
+    # Commit the changes to the database
+    db.session.add(event_updated)
+    db.session.commit()
+    # Return json showing the updated record
+    updated_event = db.session.execute(
+        db.select(Event).filter_by(id=event_id)
+    ).scalar_one_or_none()
+    result = event_schema.jsonify(updated_event)
+    response = make_response(result, 200)
+    response.headers["Content-Type"] = "application/json"
+    return response
 
 @app.route('/')
 def hello():
