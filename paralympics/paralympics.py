@@ -70,6 +70,20 @@ def add_event():
     db.session.commit()
     return {"message": f"Event added with id= {event.id}"}
 
+@app.post('/regions')
+def add_region():
+    """ Adds a new event.
+    
+    Gets the JSON data from the request body and uses this to deserialise JSON to an object using Marshmallow 
+    event_schema.load()
+
+    :returns: JSON"""
+    reg_json = request.get_json()
+    region = region_schema.load(reg_json)
+    db.session.add(region)
+    db.session.commit()
+    return {"message": f"Region added"}
+
 @app.route('/')
 def hello():
     return f"Hello!"
